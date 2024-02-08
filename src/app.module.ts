@@ -9,19 +9,35 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { ReservationModule } from './reservation/reservation.module';
 import { PropertyModule } from './property/property.module';
 import { DataloaderModule } from './dataloader/dataloader.module';
+import { UserService } from './user/user.service';
+import { createUsersLoader } from './dataloader/loaders/user.loader';
+import { PropertyService } from './property/property.service';
+import { createPropertiesLoader } from './dataloader/loaders/property.loader';
 
 @Module({
   imports: [
     TypeOrmModule.forRootAsync({
       useClass: DatabaseConfigService,
     }),
-    GraphQLModule.forRoot<ApolloDriverConfig>({
+    GraphQLModule.forRootAsync<ApolloDriverConfig>({
       driver: ApolloDriver,
-      // TODO playground to false if prod
-      playground: true,
-      // TODO schema to file on later stage
-      // autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
-      autoSchemaFile: true,
+      // TODO some way to inject service bag instead of each individual service
+      imports: [UserModule, PropertyModule],
+      inject: [UserService, PropertyService],
+      useFactory: (
+        userService: UserService,
+        propertyService: PropertyService,
+      ) => ({
+        // TODO playground to false if prod
+        playground: true,
+        // TODO schema to file on later stage
+        // autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+        autoSchemaFile: true,
+        context: () => ({
+          usersLoader: createUsersLoader(userService),
+          propertiesLoader: createPropertiesLoader(propertyService),
+        }),
+      }),
     }),
     UserModule,
     PropertyModule,
@@ -29,8 +45,6 @@ import { DataloaderModule } from './dataloader/dataloader.module';
     ReservationModule,
     DataloaderModule,
   ],
-  controllers: [],
-  providers: [],
 })
 export class AppModule {
   constructor(private readonly dataSource: DataSource) {}

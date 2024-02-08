@@ -1,10 +1,23 @@
-import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
+import {
+  Args,
+  Context,
+  GraphQLExecutionContext,
+  Int,
+  Mutation,
+  Parent,
+  Query,
+  ResolveField,
+  Resolver,
+} from '@nestjs/graphql';
 import { PropertyService } from './property.service';
 import { PropertyModel } from './dto/property.model';
 import { CreatePropertyInput } from './dto/property.input.create';
 import { UpdatePropertyInput } from './dto/property.input.update';
+import { UserModel } from '../user/dto/user.model';
+import DataLoader from 'dataloader';
+import { UserEntity } from '../user/db/user.entity';
 
-@Resolver()
+@Resolver(() => PropertyModel)
 export class PropertyResolver {
   constructor(private readonly propertyService: PropertyService) {}
 
@@ -16,9 +29,12 @@ export class PropertyResolver {
     return this.propertyService.findById(id);
   }
 
+  // TODO pagination, order params
   @Query(() => [PropertyModel])
-  async allProperties() {
-    return this.propertyService.findAll();
+  async allPropertiesForOwner(
+    @Args('ownerId', { type: () => Int }) ownerId: number,
+  ) {
+    return this.propertyService.findByOwnerId(ownerId);
   }
 
   @Mutation(() => PropertyModel)
@@ -42,5 +58,14 @@ export class PropertyResolver {
   async removeProperty(@Args('id') id: number) {
     // TODO delete exception
     return await this.propertyService.removeOneById(id);
+  }
+
+  @ResolveField('owner', () => UserModel)
+  owner(
+    @Parent() property: PropertyModel,
+    @Context('usersLoader') usersLoader: DataLoader<number, UserEntity>,
+  ) {
+    const { ownerId } = property;
+    return usersLoader.load(ownerId);
   }
 }

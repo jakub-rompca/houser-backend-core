@@ -1,7 +1,7 @@
 import { Column, Entity, OneToMany } from 'typeorm';
-import { BaseEntity } from '../database/base.entity';
-import { PropertyEntity } from '../property/property.entity';
-import { ReservationEntity } from '../reservation/reservation.entity';
+import { BaseEntity } from '../../database/base.entity';
+import { PropertyEntity } from '../../property/db/property.entity';
+import { ReservationEntity } from '../../reservation/db/reservation.entity';
 
 @Entity()
 export class UserEntity extends BaseEntity {

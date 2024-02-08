@@ -1,14 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { PropertyEntity } from './property.entity';
-import { Repository } from 'typeorm';
+import { PropertyEntity } from './db/property.entity';
+import { PropertyRepository } from './db/property.repository';
 
+// TODO interface for loaders?
 @Injectable()
 export class PropertyService {
-  constructor(
-    @InjectRepository(PropertyEntity)
-    private readonly propertyRepository: Repository<PropertyEntity>,
-  ) {}
+  constructor(private readonly propertyRepository: PropertyRepository) {}
 
   public async findAll(): Promise<PropertyEntity[]> {
     return this.propertyRepository.find();
@@ -16,6 +13,14 @@ export class PropertyService {
 
   public async findById(id: number): Promise<PropertyEntity | null> {
     return this.propertyRepository.findOneBy({ id });
+  }
+
+  public async findByIds(ids: number[]): Promise<PropertyEntity[]> {
+    return this.propertyRepository.getByIds(ids);
+  }
+
+  public async findByOwnerId(ownerId: number): Promise<PropertyEntity[]> {
+    return this.propertyRepository.findBy({ ownerId });
   }
 
   public async createProperty(
