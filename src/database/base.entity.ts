@@ -1,8 +1,7 @@
 import {
-  BeforeUpdate,
-  Column,
   CreateDateColumn,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
 export class BaseEntity {
@@ -12,15 +11,10 @@ export class BaseEntity {
   @CreateDateColumn({
     type: 'timestamp',
   })
-  recordCreatedAt: Date = new Date();
+  createdAt: Date = new Date();
 
-  @Column({
+  @UpdateDateColumn({
     type: 'timestamp',
   })
-  recordUpdatedAt: Date = new Date(new Date(new Date()).setMilliseconds(0));
-
-  @BeforeUpdate()
-  updateDates() {
-    this.recordUpdatedAt = new Date();
-  }
+  updatedAt: Date = new Date();
 }

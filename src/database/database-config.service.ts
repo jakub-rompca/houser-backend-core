@@ -1,6 +1,7 @@
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
 import { join, resolve } from 'path';
 import { config as dotenvConfig } from 'dotenv';
+import { SnakeCaseStrategy } from './strategies/snake-case.strategy';
 
 export class DatabaseConfigService implements TypeOrmOptionsFactory {
   createTypeOrmOptions(): TypeOrmModuleOptions {
@@ -19,6 +20,7 @@ export class DatabaseConfigService implements TypeOrmOptionsFactory {
       synchronize: true,
       // entities: [basePath + '/src/**/*.entity.[tj]s'],
       // migrations: [basePath + '/src/database/migrations/*.ts'],
+      namingStrategy: new SnakeCaseStrategy(),
     };
   }
 }

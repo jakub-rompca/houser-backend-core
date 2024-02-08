@@ -1,8 +1,10 @@
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, OneToMany } from 'typeorm';
 import { BaseEntity } from '../database/base.entity';
+import { PropertyEntity } from '../property/property.entity';
+import { ReservationEntity } from '../reservation/reservation.entity';
 
 @Entity()
-export class User extends BaseEntity {
+export class UserEntity extends BaseEntity {
   @Column()
   name: string;
 
@@ -17,4 +19,10 @@ export class User extends BaseEntity {
 
   @Column({ default: true })
   isActive: boolean;
+
+  @OneToMany(() => PropertyEntity, (property) => property.owner)
+  properties: PropertyEntity[];
+
+  @OneToMany(() => ReservationEntity, (reservation) => reservation.user)
+  reservations: ReservationEntity[];
 }
