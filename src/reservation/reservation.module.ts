@@ -5,11 +5,12 @@ import { ReservationEntity } from './db/reservation.entity';
 import { ReservationRepository } from './db/reservation.repository';
 import { ReservationResolver } from './reservation.resolver';
 import { BullModule } from '@nestjs/bull';
+import { QueueNamesEnum } from '../common/queue.enum';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([ReservationEntity]),
-    BullModule.registerQueue({ name: 'reservation' }),
+    BullModule.registerQueue({ name: QueueNamesEnum.RESERVATION }),
   ],
   providers: [ReservationService, ReservationResolver, ReservationRepository],
 })
