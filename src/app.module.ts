@@ -13,6 +13,7 @@ import { UserService } from './user/user.service';
 import { createUsersLoader } from './dataloader/loaders/user.loader';
 import { PropertyService } from './property/property.service';
 import { createPropertiesLoader } from './dataloader/loaders/property.loader';
+import { BullModule } from '@nestjs/bull';
 
 @Module({
   imports: [
@@ -21,7 +22,7 @@ import { createPropertiesLoader } from './dataloader/loaders/property.loader';
     }),
     GraphQLModule.forRootAsync<ApolloDriverConfig>({
       driver: ApolloDriver,
-      // TODO some way to inject service bag instead of each individual service
+      // TODO inject dataloader module which has services defined
       imports: [UserModule, PropertyModule],
       inject: [UserService, PropertyService],
       useFactory: (
@@ -38,6 +39,13 @@ import { createPropertiesLoader } from './dataloader/loaders/property.loader';
           propertiesLoader: createPropertiesLoader(propertyService),
         }),
       }),
+    }),
+    BullModule.forRoot({
+      redis: {
+        // TODO from envs
+        host: 'localhost',
+        port: 6379,
+      },
     }),
     UserModule,
     PropertyModule,
