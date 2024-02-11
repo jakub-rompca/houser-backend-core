@@ -7,6 +7,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
   // TODO port from env
   await app.listen(3000);
+  // TODO error dumping
 }
 
 bootstrap();
