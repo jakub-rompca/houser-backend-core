@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from './db/user.entity';
 import { UserRepository } from './db/user.repository';
+import { DataloaderSupportInterface } from '../dataloader/interface/dataloader-support.interface';
 
 @Injectable()
-export class UserService {
+export class UserService implements DataloaderSupportInterface<UserEntity> {
   constructor(private readonly userRepository: UserRepository) {}
 
   public async findAll(): Promise<UserEntity[]> {

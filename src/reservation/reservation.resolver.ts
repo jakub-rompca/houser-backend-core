@@ -10,13 +10,10 @@ import {
 } from '@nestjs/graphql';
 import { ReservationModel } from './dto/reservation.model';
 import { PropertyModel } from '../property/dto/property.model';
-import DataLoader from 'dataloader';
-import { PropertyEntity } from '../property/db/property.entity';
 import { ReservationService } from './reservation.service';
 import { CreateReservationInput } from './dto/reservation.input.create';
 import { UserModel } from '../user/dto/user.model';
-import { UserEntity } from '../user/db/user.entity';
-import { BaseEntity } from '../database/base.entity';
+import { DataloaderFactoryInterface } from '../dataloader/interface/dataloader.factory.interface';
 
 @Resolver(() => ReservationModel)
 export class ReservationResolver {
@@ -46,20 +43,20 @@ export class ReservationResolver {
   @ResolveField('property', () => PropertyModel)
   property(
     @Parent() reservation: ReservationModel,
-    @Context('propertiesLoader')
-    propertiesLoader: DataLoader<number, BaseEntity>,
+    @Context('loaders')
+    loaders: DataloaderFactoryInterface,
   ) {
     const { propertyId } = reservation;
-    return propertiesLoader.load(propertyId);
+    return loaders.propertiesLoader.load(propertyId);
   }
 
   @ResolveField('user', () => UserModel)
   user(
     @Parent() reservation: ReservationModel,
-    @Context('usersLoader')
-    usersLoader: DataLoader<number, BaseEntity>,
+    @Context('loaders')
+    loaders: DataloaderFactoryInterface,
   ) {
     const { propertyId } = reservation;
-    return usersLoader.load(propertyId);
+    return loaders.usersLoader.load(propertyId);
   }
 }

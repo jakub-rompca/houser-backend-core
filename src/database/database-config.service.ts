@@ -16,7 +16,7 @@ export class DatabaseConfigService implements TypeOrmOptionsFactory {
       password: `${process.env.DATABASE_PASSWORD}`,
       database: `${process.env.DATABASE_NAME}`,
       autoLoadEntities: true,
-      // TODO fix config so synchronize is not run
+      // TODO fix config to remove synchronize
       synchronize: true,
       // entities: [basePath + '/src/**/*.entity.[tj]s'],
       // migrations: [basePath + '/src/database/migrations/*.ts'],

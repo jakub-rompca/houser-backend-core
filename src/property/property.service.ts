@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { PropertyEntity } from './db/property.entity';
 import { PropertyRepository } from './db/property.repository';
+import { DataloaderSupportInterface } from '../dataloader/interface/dataloader-support.interface';
 
-// TODO interface for loaders?
 @Injectable()
-export class PropertyService {
+export class PropertyService
+  implements DataloaderSupportInterface<PropertyEntity>
+{
   constructor(private readonly propertyRepository: PropertyRepository) {}
 
   public async findAll(): Promise<PropertyEntity[]> {

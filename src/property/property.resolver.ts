@@ -1,7 +1,6 @@
 import {
   Args,
   Context,
-  GraphQLExecutionContext,
   Int,
   Mutation,
   Parent,
@@ -14,8 +13,7 @@ import { PropertyModel } from './dto/property.model';
 import { CreatePropertyInput } from './dto/property.input.create';
 import { UpdatePropertyInput } from './dto/property.input.update';
 import { UserModel } from '../user/dto/user.model';
-import DataLoader from 'dataloader';
-import { UserEntity } from '../user/db/user.entity';
+import { DataloaderFactoryInterface } from '../dataloader/interface/dataloader.factory.interface';
 
 @Resolver(() => PropertyModel)
 export class PropertyResolver {
@@ -63,9 +61,10 @@ export class PropertyResolver {
   @ResolveField('owner', () => UserModel)
   owner(
     @Parent() property: PropertyModel,
-    @Context('usersLoader') usersLoader: DataLoader<number, UserEntity>,
+    @Context('loaders')
+    loaders: DataloaderFactoryInterface,
   ) {
     const { ownerId } = property;
-    return usersLoader.load(ownerId);
+    return loaders.usersLoader.load(ownerId);
   }
 }

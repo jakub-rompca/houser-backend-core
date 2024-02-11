@@ -15,4 +15,6 @@ describe('PropertyResolver', () => {
   it('should be defined', () => {
     expect(resolver).toBeDefined();
   });
+
+  // TODO e2e-esque tests with actual test database
 });

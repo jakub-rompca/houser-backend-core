@@ -15,4 +15,6 @@ describe('ReservationService', () => {
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
+
+  // TODO test for checking if queue was used
 });

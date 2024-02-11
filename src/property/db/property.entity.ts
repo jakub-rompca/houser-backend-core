@@ -1,10 +1,10 @@
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
-import { BaseEntity } from '../../database/base.entity';
+import { BasicEntity } from '../../database/basic.entity';
 import { UserEntity } from '../../user/db/user.entity';
 import { ReservationEntity } from '../../reservation/db/reservation.entity';
 
 @Entity()
-export class PropertyEntity extends BaseEntity {
+export class PropertyEntity extends BasicEntity {
   @Column()
   name: string;
 

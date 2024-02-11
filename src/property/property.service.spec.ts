@@ -15,4 +15,6 @@ describe('PropertyService', () => {
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
+
+  // TODO - unit tests when there are more business logic, currently it's just db
 });
