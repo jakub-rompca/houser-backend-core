@@ -6,6 +6,8 @@ import DataLoader from 'dataloader';
 import { UserEntity } from '../../user/db/user.entity';
 import { convertEntityArrayToEntityMap } from '../dataloader.utils';
 import { PropertyEntity } from '../../property/db/property.entity';
+import { DataloaderSupportInterface } from '../interface/dataloader-support.interface';
+import { BasicEntity } from '../../database/basic.entity';
 
 @Injectable()
 export class DataloaderFactory {
@@ -16,22 +18,18 @@ export class DataloaderFactory {
 
   public getLoaders(): DataloaderFactoryInterface {
     return {
-      usersLoader: this.createUsersLoader(),
-      propertiesLoader: this.createPropertiesLoader(),
+      usersLoader: this.createGenericLoader<UserEntity>(this.userService),
+      propertiesLoader: this.createGenericLoader<PropertyEntity>(
+        this.propertyService,
+      ),
     };
   }
 
-  private createUsersLoader(): DataLoader<number, UserEntity> {
-    return new DataLoader<number, UserEntity>(async (userIds) => {
-      const users = await this.userService.findByIds([...userIds]);
-      const map = convertEntityArrayToEntityMap(users);
-      return userIds.map((id) => map[id]);
-    });
-  }
-
-  private createPropertiesLoader(): DataLoader<number, PropertyEntity> {
-    return new DataLoader<number, PropertyEntity>(async (userIds) => {
-      const users = await this.propertyService.findByIds([...userIds]);
+  private createGenericLoader<T extends BasicEntity>(
+    genericService: DataloaderSupportInterface<T>,
+  ) {
+    return new DataLoader<number, T>(async (userIds) => {
+      const users = await genericService.findByIds([...userIds]);
       const map = convertEntityArrayToEntityMap(users);
       return userIds.map((id) => map[id]);
     });
