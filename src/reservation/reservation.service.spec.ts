@@ -99,6 +99,4 @@ describe('ReservationService', () => {
     // Then
     expect(queueAddMock).toHaveBeenCalledTimes(1);
   });
-
-  // TODO test for checking if queue was used
 });
